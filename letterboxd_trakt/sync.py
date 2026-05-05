@@ -227,11 +227,13 @@ def get_diary(lb_user: LB_user.User, last_diary_entry: datetime.date | None = No
 
         for entry_key, entry in lb_page_diary_entries.items():
             # convert date dict to date object
-            entry["date"] = datetime.date(
-                entry["date"]["year"],
-                entry["date"]["month"],
-                entry["date"]["day"],
-            )
+            date_val = entry["date"]
+            if isinstance(date_val, dict):
+                entry["date"] = datetime.date(date_val["year"], date_val["month"], date_val["day"])
+            elif isinstance(date_val, str):
+                entry["date"] = datetime.date.fromisoformat(date_val[:10])
+            else:
+                entry["date"] = date_val
 
             if last_diary_entry:
                 if entry["date"] <= last_diary_entry:
@@ -269,7 +271,7 @@ def sync_letterboxd_diary(config: Config, account: Account):
     for i, entry in enumerate(
         reversed(lb_diary_to_process)
     ):  # iterate backwards since you can rate things multiple times on letterboxd but not on trakt, so we want the last rating to be the final one. yum.
-        entry_rating = entry["actions"]["rating"]
+        entry_rating = entry["actions"]["rating"] * 2  # letterboxd is out of 5, trakt out of 10
 
         console.print(
             f"{i + 1}/{len(lb_diary_to_process)}: {entry['name']} on {humanize.naturaldate(entry['date'])}"
