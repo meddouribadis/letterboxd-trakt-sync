@@ -5,20 +5,29 @@ annotated-types==0.7.0
     # via pydantic
 beautifulsoup4==4.12.3
     # via
+    #   fastfingertips
     #   letterboxd-trakt
     #   letterboxdpy
 certifi==2025.8.3
-    # via requests
+    # via
+    #   curl-cffi
+    #   requests
+cffi==2.0.0
+    # via curl-cffi
 cfgv==3.4.0
     # via pre-commit
 charset-normalizer==3.4.3
     # via requests
 cronsim==2.6
     # via letterboxd-trakt
+curl-cffi==0.15.0
+    # via letterboxdpy
 deprecated==1.2.18
     # via pytrakt
 distlib==0.4.0
     # via virtualenv
+fastfingertips==0.1.4
+    # via letterboxdpy
 filelock==3.19.1
     # via virtualenv
 humanize==4.12.3
@@ -27,7 +36,7 @@ identify==2.6.13
     # via pre-commit
 idna==3.10
     # via requests
-letterboxdpy @ git+https://github.com/f0e/letterboxdpy@92baaded08ebc79a975d29b24ed5472053fdc32f
+letterboxdpy @ git+https://github.com/f0e/letterboxdpy@8400559e5224234765308224c71dcc9d1d0bfa45
     # via letterboxd-trakt
 lxml==6.0.0
     # via
@@ -49,6 +58,8 @@ pathspec==0.12.1
 platformdirs==4.3.8
     # via virtualenv
 pre-commit==4.3.0
+pycparser==3.0 ; implementation_name != 'PyPy'
+    # via cffi
 pydantic==2.11.7
     # via letterboxd-trakt
 pydantic-core==2.33.2
@@ -63,16 +74,20 @@ pyyaml==6.0.2
     #   pre-commit
 requests==2.31.0
     # via
-    #   letterboxdpy
+    #   fastfingertips
     #   pytrakt
     #   requests-oauthlib
 requests-oauthlib==2.0.0
     # via pytrakt
 rich==14.1.0
-    # via letterboxd-trakt
+    # via
+    #   curl-cffi
+    #   letterboxd-trakt
 ruff==0.12.10
 soupsieve==2.7
     # via beautifulsoup4
+termcolor==3.3.0
+    # via fastfingertips
 typing-extensions==4.14.1
     # via
     #   mypy
@@ -83,8 +98,6 @@ typing-inspection==0.4.1
     # via pydantic
 urllib3==2.5.0
     # via requests
-validators==0.35.0
-    # via letterboxdpy
 virtualenv==20.34.0
     # via pre-commit
 wrapt==1.17.3
