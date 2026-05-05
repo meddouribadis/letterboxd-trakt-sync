@@ -51,7 +51,7 @@ def get_trakt_movie(imdb_id: str):
 
 
 def get_needs_trakt_rating(
-    lb_rating: int,
+    lb_rating: int | None,
     lb_rating_date: datetime.date | None,
     lb_imdb_id: str,
     trakt_movie_ratings: list[T_Movie],
@@ -175,7 +175,7 @@ def sync(
     trakt_movie_watches: list[T_Movie],
     trakt_movie_ratings: list[T_Movie],
     lb_movie: LB_movie.Movie,
-    lb_rating: int,
+    lb_rating: int | None,
     lb_rating_date: datetime.date | None,
     lb_watched: bool,
     lb_watch_date: datetime.date | None,
@@ -271,7 +271,8 @@ def sync_letterboxd_diary(config: Config, account: Account):
     for i, entry in enumerate(
         reversed(lb_diary_to_process)
     ):  # iterate backwards since you can rate things multiple times on letterboxd but not on trakt, so we want the last rating to be the final one. yum.
-        entry_rating = entry["actions"]["rating"] * 2  # letterboxd is out of 5, trakt out of 10
+        lb_rating = entry.get("actions", {}).get("rating")
+        entry_rating = int(lb_rating * 2) if lb_rating is not None else None
 
         console.print(
             f"{i + 1}/{len(lb_diary_to_process)}: {entry['name']} on {humanize.naturaldate(entry['date'])}"
