@@ -20,7 +20,9 @@ WATCH_SEARCH_RANGE_HOURS = 48
 # TODO: could possibly look at last activity and see if theres anything missing from there to the next thing in user_films and warn/fill in gaps?
 
 
-def extract_imdb_id_from_link(imdb_link: str):
+def extract_imdb_id_from_link(imdb_link: str | None):
+    if not imdb_link:
+        return None
     return imdb_link.split("/")[-2]
 
 
@@ -179,6 +181,9 @@ def sync(
     lb_watch_date: datetime.date | None,
 ):
     lb_imdb_id = extract_imdb_id_from_link(lb_movie.imdb_link)
+    if not lb_imdb_id:
+        console.print("No IMDb link found, skipping (likely a TV show)", style="dim")
+        return False
 
     needs_trakt_rating = get_needs_trakt_rating(
         lb_rating, lb_rating_date, lb_imdb_id, trakt_movie_ratings
@@ -317,6 +322,10 @@ def sync_letterboxd_watchlist(config: Config, account: Account):
     for movie_id, movie_details in lb_watchlist["data"].items():
         lb_movie = LB_movie.Movie(movie_details["slug"])
         lb_imdb_id = extract_imdb_id_from_link(lb_movie.imdb_link)
+
+        if not lb_imdb_id:
+            console.print(f"No IMDb link for {lb_movie.title}, skipping (likely a TV show)", style="dim")
+            continue
 
         if lb_imdb_id not in trakt_watchlist_imdb_ids:
             trakt_movie = get_trakt_movie(lb_imdb_id)
